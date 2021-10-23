@@ -1,6 +1,6 @@
-# canvas-multiline-text
+# canvas-wrapper
 
-Draws a text in a rectangle on a canvas, on multiple lines. If a word is too long to fit in the rectangle, it will be cut off with a dash and continued on the next line.
+Draws a text in a rectangle on a canvas, on multiple lines. If a word is too long to fit in the set width, it will be cut off with a dash and continued on the next line.
 
 It was conceived to be used on Node.js with Automattic's implementation of Canvas [`node-canvas`](https://github.com/Automattic/node-canvas), but it should work in browsers too.
 

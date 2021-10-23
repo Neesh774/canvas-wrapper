@@ -4,7 +4,7 @@
     "type": "git",
     "url": "https://github.com/Neesh774/canvas-wrapper"
   },
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Wraps text using the node-canvas library in multiple lines with constraints",
   "main": "index.js",
   "scripts": {
