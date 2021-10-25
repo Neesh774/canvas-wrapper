@@ -1,55 +1,85 @@
 # canvas-wrapper
 
-Draws a text in a rectangle on a canvas, on multiple lines. If a word is too long to fit in the set width, it will be cut off with a dash and continued on the next line.
 
-It was conceived to be used on Node.js with Automattic's implementation of Canvas [`node-canvas`](https://github.com/Automattic/node-canvas), but it should work in browsers too.
+## Syntax
+```javascript
+CanvasTextWrapper(HTMLCanvasElement, String [, options]);
+```
 
-Initialy developed for [Toast](https://github.com/Neesh774/Toast).
+## Options
+
+| Option  | Value | Description |
+| ------------- | ------------- | ------------- |
+| **font**  | *String*  | Text style that includes font size (in px), font weight, font family, etc.  |
+| **lineHeight**  | *String* or *Number* | Number - 'n' times font size where 1 is equivalent to '100%'. Also the property can be set in '%' or 'px'. |
+| **textAlign**  | `"left"` `"center"` `"right"` | Horizontal alignment of each line. |
+| **verticalAlign** | `"top"`  `"middle"` `"bottom"` | Vertical alignment of the whole text block. |
+| **paddingX**  | *Number* | Horizontal padding (in px) that is equally set on left and right sides. |
+| **paddingY**  | *Number* | Vertical padding (in px) that is equally set on top and bottoms. |
+| **offsetX**  | *Number* | Horizontal offset (in px) that is set on left  side. |
+| **offsetY**  | *Number* | Vertical offset (in px) that is set on top. |
+| **maxWidth**  | *Number* | Limit the width (in px) of the text box. 0 means no limit |
+| **fitParent**  | *Boolean* | Fit canvas' container size instead of its own size. |
+| **lineBreak**  | `"auto"` `"word"` |  `"auto"` - text goes to the next line on a whole word when there's no room  `"word"` - each next word is placed on a new line |
+| **sizeToFill**  | *Boolean* |  Ignore given font size and line height and resize text to fill its padded container. |
+| **maxFontSizeToFill**  | *Number* |  If above option is `true` text won't be bigger than set. |
+| **strokeText**  | *Boolean* |  Allow text outline based on canvas context configuration. |
+| **justifyLines**  | *Boolean* |  All lines will try to match the same width with flexed spaces between the words. |
+| **allowNewLine**  | *Boolean* |  Text breaks on a new line character "\n". Supports multiple consecutive new lines. |
+| **renderHDPI**  | *Boolean* |  Text is rendered based on device pixel ratio. |
+| **textDecoration**  | `"none"`  `"underline"` |  Text is underlined according to `context.strokeStyle` and `context.lineWidth` |
+
+NOTE: if a single word is too long to fit the width with specified font size, it will break on any letter unless ```sizeToFill``` option is enabled.
+
+
+## Default options
+```javascript
+   {
+        font: '18px Arial, sans-serif',
+        lineHeight: 1,
+        textAlign: 'left',
+        verticalAlign: 'top',
+        paddingX: 0,
+        paddingY: 0,
+        offsetX: 0,
+        offsetY: 0,
+        maxWidth: 0,
+        fitParent: false,
+        lineBreak: 'auto',
+        strokeText: false
+        sizeToFill: false,
+        maxFontSizeToFill: false,
+        allowNewLine: true,
+        justifyLines: false,
+        renderHDPI: true,
+        textDecoration: 'none'
+    }
+```
+
 
 ## Usage
-This module exports a single function that draws a text on a canvas' 2d context, breaking it in multiple lines if necessary.
-
-The function also returns the used font size for drawing text.
+Configure context properties such as ```fillStyle```, ```lineWidth```, ```strokeStyle``` etc. before passing it to CanvasTextWrapper like so:
 
 ```javascript
-drawMultilineText(text, context, options)
+var CanvasTextWrapper = require('canvas-text-wrapper').CanvasTextWrapper;
+
+var canvas = document.getElementById('#canvasText');
+canvas.width = 200;
+canvas.height = 200;
+context = canvas.getContext('2d');
+context.lineWidth = 2;
+context.strokeStyle = '#ff0000';
+
+CanvasTextWrapper(canvas, 'Hello', {strokeText: true});
 ```
 
-### Example
-```javascript
-const canvas = new Canvas(500, 300)
-const drawMultilineText = require('canvas-multiline-text')
 
-const fontSizeUsed = drawMultilineText(
-	canvas.getContext('2d'),
-	"Please could you stop the noise, I'm trying to get some rest from all the unborn chicken voices in my head. What's that? What's that?",
-	{
-		rect: {
-			x: 10,
-			y: 10,
-			width: canvas.width - 20,
-			height: canvas.height - 20
-		},
-		font: 'Merriweather',
-		verbose: true,
-		lineHeight: 1.4,
-		minFontSize: 15,
-		maxFontSize: 120
-)
+## Test
+Run ```npm t```
+NOTE: Test requires [beefy](http://didact.us/beefy/) to be installed globally
 
-console.log('Text drawn with font size: ', fontSizeUsed)
+## Install
+```sh
+npm i canvas-text-wrapper --save
+bower install canvas-text-wrapper
 ```
-
-### Options
-The whole `options` parameter (well) if optional.
- * `font` - Used font name or font family. Default is `sans-serif`.
- * `minFontSize` - Min font size for text. Default is `30`.
- * `maxFontSize` - Max font size for text. Default is `100`.
- * `rect` - Area for text. Default is `{ x: 0, y: 0, width: ctx.canvas.width, height: ctx.canvas.height }`.
- * `stroke` - If true, `strokeText()` wil be used instead of `fillText()`. Default is `false`.
- * `lineHeight` - Multiplicator for line height. Default is `1.1`. *
- * `verbose` - If true, greenlock-express will log (see below) the server bootstrap.
- * `logFunction` - Custom function for logging, with signature `logFunction(message)`. Default is `console.log`.
-
-## Dependencies
-This module require some kind of Canvas object, so in Node.js you'll need to have [`node-canvas`](https://github.com/Automattic/node-canvas) installed, even if it's not in this modul's dependencies list.
